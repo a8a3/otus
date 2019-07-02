@@ -1,16 +1,21 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(helloworld VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+#project(helloworld VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+project(helloworld VERSION 0.0.1)
+
+find_package(Boost   COMPONENTS unit_test_framework REQUIRED)
+find_package(Threads REQUIRED)
+find_package(GTest   REQUIRED)
 
 configure_file(version.h.in version.h)
 
 add_executable(helloworld_cli main.cpp)
 add_library(helloworld lib.cpp)
 add_executable(test_version test_version.cpp)
+add_executable(gtest_version gtest_version.cpp)
 
-set_target_properties(helloworld_cli helloworld test_version PROPERTIES
+set_target_properties(helloworld_cli helloworld test_version gtest_version PROPERTIES
     CXX_STANDARD 14
     CXX_STANDARD_REQUIRED ON
 )
@@ -25,8 +30,15 @@ set_target_properties(test_version PROPERTIES
 target_link_libraries(helloworld_cli PRIVATE
     helloworld
 )
+
 target_link_libraries(test_version
     ${Boost_LIBRARIES}
+    helloworld
+)
+
+target_link_libraries(gtest_version
+    gtest
+    gtest_main
     helloworld
 )
 
@@ -40,6 +52,9 @@ if (MSVC)
     target_compile_options(test_version PRIVATE
         /W4
     )
+    target_compile_options(gtest_version PRIVATE
+        /W4
+    )
 else ()
     target_compile_options(helloworld_cli PRIVATE
         -Wall -Wextra -pedantic -Werror
@@ -48,6 +63,9 @@ else ()
         -Wall -Wextra -pedantic -Werror
     )
     target_compile_options(test_version PRIVATE
+        -Wall -Wextra -pedantic -Werror
+    )
+    target_compile_options(gtest_version PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
 endif()
@@ -69,3 +87,4 @@ include(CPack)
 enable_testing()
 
 add_test(test_version test_version)
+add_test(gtest_version TestVersion)
