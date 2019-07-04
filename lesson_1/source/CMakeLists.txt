@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.2)
 
-#project(helloworld VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+if(DEFINED ENV{TRAVIS_BUILD_NUMBER})
+    message("Build on Travis")
+    project(helloworld VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+else()
+    message("Build on localhost")
+    project(helloworld VERSION 0.0.0)
+endif()
 
 project(helloworld VERSION 0.0.1)
 
@@ -87,4 +93,18 @@ include(CPack)
 enable_testing()
 
 add_test(test_version test_version)
-add_test(gtest_version TestVersion)
+add_test(gtest_version gtest_version)
+
+add_custom_command(
+    TARGET gtest_version
+    POST_BUILD 
+    COMMAND ./gtest_version
+    COMMENT "Run google tests..."
+)
+
+add_custom_command(
+    TARGET test_version
+    POST_BUILD 
+    COMMAND ./test_version
+    COMMENT "Run boost tests..."
+)
