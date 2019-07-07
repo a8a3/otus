@@ -5,8 +5,8 @@ before_script:
 - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
 - sudo apt-get update -qq
 script:
-- cd lesson_1/source/
-- cmake .
+- cd lesson_1/source/ && mkdir build && cd build
+- cmake ..
 - cmake --build .
 - cmake --build . --target test
 - cmake --build . --target package
