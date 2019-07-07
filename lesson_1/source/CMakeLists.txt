@@ -46,6 +46,7 @@ target_link_libraries(gtest_version
     gtest
     gtest_main
     helloworld
+    pthread
 )
 
 if (MSVC)
