@@ -5,7 +5,7 @@ if(DEFINED ENV{TRAVIS_BUILD_NUMBER})
     project(helloworld VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 else()
     message("Build on localhost")
-    project(helloworld VERSION 0.0.0)
+    project(helloworld VERSION 0.0.1)
 endif()
 
 find_package(Boost   COMPONENTS unit_test_framework REQUIRED)
