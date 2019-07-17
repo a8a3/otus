@@ -13,7 +13,7 @@ before_script:
 - sudo make
 - sudo cp *.a /usr/lib
 script:
-- cd $TRAVIS_BUILD_DIR/lesson_1/source/ && mkdir build && cd build
+- cd $TRAVIS_BUILD_DIR/lesson_2 && mkdir build && cd build
 - cmake ..
 - cmake --build .
 - cmake --build . --target package
@@ -21,4 +21,4 @@ deploy:
   provider: script
   skip_cleanup: true
   script:
-  - curl -T helloworld-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -ua8a3:$BINTRAY_API_KEY "https://api.bintray.com/content/fakecompany/otus/helloworld/$TRAVIS_BUILD_NUMBER/helloworld-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
+  - curl -T ip_filter-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -ua8a3:$BINTRAY_API_KEY "https://api.bintray.com/content/fakecompany/otus/ip_filter/$TRAVIS_BUILD_NUMBER/ip_filter-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
