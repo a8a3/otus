@@ -1,4 +1,8 @@
 language: cpp
+# safelist
+branches:
+  only:
+  - master
 before_script:
 - sudo apt-get install libboost-test-dev -y
 - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
@@ -8,8 +12,19 @@ before_script:
 - sudo env "PATH=$PATH" cmake CMakeLists.txt
 - sudo make
 - sudo cp *.a /usr/lib
+before_install:
+  # C++17
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+# Install dependencies
+install: 
+  # C++17
+  - sudo apt-get install -qq g++-7
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
 script:
-- cd $TRAVIS_BUILD_DIR/lesson_1/source/ && mkdir build && cd build
+#try to know gcc version  
+- gcc --version
+- cd $TRAVIS_BUILD_DIR/lesson_2 && mkdir build && cd build
 - cmake ..
 - cmake --build .
 - cmake --build . --target package
@@ -17,4 +32,4 @@ deploy:
   provider: script
   skip_cleanup: true
   script:
-  - curl -T helloworld-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -ua8a3:$BINTRAY_API_KEY "https://api.bintray.com/content/fakecompany/otus/helloworld/$TRAVIS_BUILD_NUMBER/helloworld-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"
+  - curl -T ip_filter-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb -ua8a3:$BINTRAY_API_KEY "https://api.bintray.com/content/fakecompany/otus/ip_filter/$TRAVIS_BUILD_NUMBER/ip_filter-0.0.$TRAVIS_BUILD_NUMBER-Linux.deb;deb_distribution=trusty;deb_component=main;deb_architecture=amd64;publish=1"

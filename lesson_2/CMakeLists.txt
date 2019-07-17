@@ -17,6 +17,10 @@ set_target_properties(ip_filter PROPERTIES
     CXX_STANDARD_REQUIRED ON
 )
 
+target_include_directories(ip_filter_gtests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/sources
+)
+
 target_link_libraries(ip_filter_gtests 
     ${GTEST_BOTH_LIBRARIES}
     pthread
