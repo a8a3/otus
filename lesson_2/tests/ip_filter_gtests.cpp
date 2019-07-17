@@ -61,16 +61,6 @@ TEST_P(SortTest, SortCorrectness)
 }
 
 // ------------------------------------------------------------------
-INSTANTIATE_TEST_CASE_P(LexicographicSort, SortTest, 
-    testing::Values(
-        ip_pool{
-        {"1", "1", "1", "1"},
-        {"1", "2", "1", "1"},
-        {"1", "2", "2", "1"},
-        {"1", "2", "2", "2"}}, lexicographic_sort
-));
-
-// ------------------------------------------------------------------
 INSTANTIATE_TEST_CASE_P(ReverseLexicographicSort, SortTest, 
     testing::Values(
         ip_pool{

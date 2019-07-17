@@ -61,12 +61,6 @@ static inline void sort( ip_pool& _ips, std::function<bool(const tokens&, const 
 }
 
 // ------------------------------------------------------------------
-// TODO сделать шаблонной и параметризовать компаратором (std::greater/std::less)
-inline void lexicographic_sort(ip_pool& _ips) {
-    sort( _ips, [](const tokens& _t1, const tokens& _t2){return join(_t1) < join(_t2);} );
-}
-
-// ------------------------------------------------------------------
 inline void reverse_lexicographic_sort(ip_pool& _ips) {
     std::sort( _ips.begin(), _ips.end(), [](const tokens& _t1, const tokens& _t2){
         assert(_t1.size() == _t2.size());
