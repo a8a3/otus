@@ -30,6 +30,10 @@ struct ip_pool_sort_type {
     ip_pool                       ips;
     std::function<void(ip_pool&)> sort_func;
 
+    ip_pool_sort_type(const ip_pool& _ips, const std::function<void(ip_pool&)>& _f)
+    : ips(_ips)
+    , sort_func(_f) {}
+
     friend std::ostream& operator<<(std::ostream& _os, const ip_pool_sort_type& _ip_sort_type) {
 
         for( const auto& ip: _ip_sort_type.ips ) {
@@ -51,7 +55,7 @@ struct SortTest : testing::Test,
 // ------------------------------------------------------------------
 TEST_P(SortTest, SortCorrectness)
 {
-    auto ips = GetParam().ips;
+    const auto ips = GetParam().ips;
 
     auto random_ips = ips;
     std::shuffle(random_ips.begin(), random_ips.end(), rand_engine);
@@ -62,12 +66,12 @@ TEST_P(SortTest, SortCorrectness)
 
 // ------------------------------------------------------------------
 INSTANTIATE_TEST_CASE_P(ReverseLexicographicSort, SortTest, 
-    testing::Values(
+    testing::Values(ip_pool_sort_type(
         ip_pool{
         {"68", "2", "2", "1"},
         {"46", "2", "1", "1"},
         { "5", "1", "1", "1"},
-        { "1", "1", "1", "1"}}, reverse_lexicographic_sort
+        { "1", "1", "1", "1"}}, reverse_lexicographic_sort)
 ));
 
 // ------------------------------------------------------------------

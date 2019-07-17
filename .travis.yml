@@ -12,7 +12,18 @@ before_script:
 - sudo env "PATH=$PATH" cmake CMakeLists.txt
 - sudo make
 - sudo cp *.a /usr/lib
+before_install:
+  # C++17
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+# Install dependencies
+install: 
+  # C++17
+  - sudo apt-get install -qq g++-7
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
 script:
+#try to know gcc version  
+- gcc --version
 - cd $TRAVIS_BUILD_DIR/lesson_2 && mkdir build && cd build
 - cmake ..
 - cmake --build .
