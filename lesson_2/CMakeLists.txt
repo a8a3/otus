@@ -6,6 +6,7 @@ else()
     project(ip_filter VERSION 0.0.1)
 endif()
 
+find_package(Boost   REQUIRED)
 find_package(Threads REQUIRED)
 find_package(GTest   REQUIRED)
 
@@ -17,13 +18,17 @@ set_target_properties(ip_filter PROPERTIES
     CXX_STANDARD_REQUIRED ON
 )
 
+target_include_directories(ip_filter PRIVATE
+    ${Boost_INCLUDE_DIRS}
+)
+
 target_include_directories(ip_filter_gtests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/sources
 )
 
 target_link_libraries(ip_filter_gtests 
     ${GTEST_BOTH_LIBRARIES}
-    pthread
+    ${CMAKE_THREAD_LIBS_INIT}
 )
 
 if (MSVC)

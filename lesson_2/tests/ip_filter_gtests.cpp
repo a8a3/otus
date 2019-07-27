@@ -10,18 +10,18 @@ using namespace ip_filter;
 // ------------------------------------------------------------------
 TEST(TestSplit, SplitCorrectness)
 {
-    ASSERT_TRUE(split("",      '.') == tokens({""}));
-    ASSERT_TRUE(split("11",    '.') == tokens({"11"}));
-    ASSERT_TRUE(split("..",    '.') == tokens({"", "", ""}));
-    ASSERT_TRUE(split("11.",   '.') == tokens({"11", ""}));
-    ASSERT_TRUE(split(".11",   '.') == tokens({"", "11"}));
-    ASSERT_TRUE(split("11.22", '.') == tokens({"11", "22"}));
+    ASSERT_TRUE(split_to_tokens("",      '.') == bad_ip);
+    ASSERT_TRUE(split_to_tokens("11",    '.') == bad_ip);
+    ASSERT_TRUE(split_to_tokens("..",    '.') == bad_ip);
+    ASSERT_TRUE(split_to_tokens("11.",   '.') == bad_ip);
+    ASSERT_TRUE(split_to_tokens(".11",   '.') == bad_ip);
+    ASSERT_TRUE(split_to_tokens("11.22", '.') == bad_ip);
 }
 
 // ------------------------------------------------------------------
 TEST(TestJoin, JoinCorrectness)
 {
-    auto joined_tokens = join({"1", "1", "1", "1"}, '.');
+    auto joined_tokens = join({1, 1, 1, 1}, '.');
     ASSERT_EQ(joined_tokens, std::string{"1.1.1.1"});
 }
 
@@ -68,26 +68,26 @@ TEST_P(SortTest, SortCorrectness)
 INSTANTIATE_TEST_CASE_P(ReverseLexicographicSort, SortTest, 
     testing::Values(ip_pool_sort_type(
         ip_pool{
-        {"68", "2", "2", "1"},
-        {"46", "2", "1", "1"},
-        { "5", "1", "1", "1"},
-        { "1", "1", "1", "1"}}, reverse_lexicographic_sort)
+        {68, 2, 2, 1},
+        {46, 2, 1, 1},
+        { 5, 1, 1, 1},
+        { 1, 1, 1, 1}}, reverse_lexicographic_sort)
 ));
 
 // ------------------------------------------------------------------
 TEST(FilterTest, TestFilterByFirstSymbol)
 {
     auto filtered_ips = filter(ip_pool{
-        {"1", "2", "3", "4"},
-        {"1","12","13","14"},
-        {"2","22","23","24"},
-        {"2","32","33","34"},
-        {"1","42","43","44"}}, 1);
+        {1, 2, 3, 4},
+        {1,12,13,14},
+        {2,22,23,24},
+        {2,32,33,34},
+        {1,42,43,44}}, 1);
 
     auto result_ips = ip_pool{
-            {"1", "2", "3", "4"},
-            {"1","12","13","14"},
-            {"1","42","43","44"}};
+            {1, 2, 3, 4},
+            {1,12,13,14},
+            {1,42,43,44}};
 
     ASSERT_EQ(filtered_ips, result_ips);
 }
@@ -96,15 +96,15 @@ TEST(FilterTest, TestFilterByFirstSymbol)
 TEST(FilterTest, TestFilterByTwoFirstSymbols)
 {
     auto filtered_ips = filter(ip_pool{
-        {"1", "2", "3", "4"},
-        {"1", "2","13","14"},
-        {"1","22","23","24"},
-        {"2"," 2","33","34"},
-        {"1","42","43","44"}}, 1, 2);
+        {1, 2, 3, 4},
+        {1, 2,13,14},
+        {1,22,23,24},
+        {2, 2,33,34},
+        {1,42,43,44}}, 1, 2);
 
     auto result_ips = ip_pool{
-            {"1", "2", "3", "4"},
-            {"1", "2","13","14"} };
+            {1, 2, 3, 4},
+            {1, 2,13,14} };
 
     ASSERT_EQ(filtered_ips, result_ips);
 }
@@ -113,17 +113,17 @@ TEST(FilterTest, TestFilterByTwoFirstSymbols)
 TEST(FilterTest, TestFilterAny)
 {
     auto filtered_ips = filter_any(ip_pool{
-        { "1", "2", "3", "4"},
-        {"21", "2", "1","14"},
-        {"11","22","23", "1"},
-        { "2", "2","33","34"},
-        {"31", "1","43","44"}}, 1);
+        { 1, 2, 3, 4},
+        {21, 2, 1,14},
+        {11,22,23, 1},
+        { 2, 2,33,34},
+        {31, 1,43,44}}, 1);
 
     auto result_ips = ip_pool{
-        { "1", "2", "3", "4"},
-        {"21", "2", "1","14"},
-        {"11","22","23", "1"},
-        {"31", "1","43","44"}};
+        { 1, 2, 3, 4},
+        {21, 2, 1,14},
+        {11,22,23, 1},
+        {31, 1,43,44}};
 
     ASSERT_EQ(filtered_ips, result_ips);
 }
