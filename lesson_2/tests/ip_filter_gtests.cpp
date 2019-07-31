@@ -10,18 +10,27 @@ using namespace ip_filter;
 // ------------------------------------------------------------------
 TEST(TestSplit, SplitCorrectness)
 {
-    ASSERT_TRUE(split_to_tokens("",      '.') == bad_ip);
-    ASSERT_TRUE(split_to_tokens("11",    '.') == bad_ip);
-    ASSERT_TRUE(split_to_tokens("..",    '.') == bad_ip);
-    ASSERT_TRUE(split_to_tokens("11.",   '.') == bad_ip);
-    ASSERT_TRUE(split_to_tokens(".11",   '.') == bad_ip);
-    ASSERT_TRUE(split_to_tokens("11.22", '.') == bad_ip);
+    ASSERT_THROW(split_to_tokens("",      '.'), std::invalid_argument);
+    ASSERT_EQ   (split_to_tokens("11",    '.'), (tokens{11, 0, 0, 0}));
+    ASSERT_THROW(split_to_tokens("..",    '.'), std::invalid_argument);
+    ASSERT_THROW(split_to_tokens("11.",   '.'), std::invalid_argument);
+    ASSERT_THROW(split_to_tokens(".11",   '.'), std::invalid_argument);
+    ASSERT_EQ   (split_to_tokens("11.22", '.'), (tokens{11, 22, 0, 0}));
+
+    ASSERT_THROW(split_to_tokens("1.2.3.4.5", '.'), std::out_of_range);
+
+    ASSERT_THROW(split_to_tokens("192.168.0.256", '.'), std::runtime_error);
+    ASSERT_THROW(split_to_tokens("-192.168.0.256", '.'), std::runtime_error);
+    
+    ASSERT_THROW(split_to_tokens("1.2.3.4.5", '.'), std::out_of_range);
+
+    ASSERT_EQ(split_to_tokens("127.0.0.1", '.'), (tokens{127,0,0,1}));
 }
 
 // ------------------------------------------------------------------
 TEST(TestJoin, JoinCorrectness)
 {
-    auto joined_tokens = join({1, 1, 1, 1}, '.');
+    const auto joined_tokens = join({1, 1, 1, 1}, '.');
     ASSERT_EQ(joined_tokens, std::string{"1.1.1.1"});
 }
 
@@ -77,14 +86,14 @@ INSTANTIATE_TEST_CASE_P(ReverseLexicographicSort, SortTest,
 // ------------------------------------------------------------------
 TEST(FilterTest, TestFilterByFirstSymbol)
 {
-    auto filtered_ips = filter(ip_pool{
+    const auto filtered_ips = filter(ip_pool{
         {1, 2, 3, 4},
         {1,12,13,14},
         {2,22,23,24},
         {2,32,33,34},
         {1,42,43,44}}, 1);
 
-    auto result_ips = ip_pool{
+    const auto result_ips = ip_pool{
             {1, 2, 3, 4},
             {1,12,13,14},
             {1,42,43,44}};
@@ -95,14 +104,14 @@ TEST(FilterTest, TestFilterByFirstSymbol)
 // ------------------------------------------------------------------
 TEST(FilterTest, TestFilterByTwoFirstSymbols)
 {
-    auto filtered_ips = filter(ip_pool{
+    const auto filtered_ips = filter(ip_pool{
         {1, 2, 3, 4},
         {1, 2,13,14},
         {1,22,23,24},
         {2, 2,33,34},
         {1,42,43,44}}, 1, 2);
 
-    auto result_ips = ip_pool{
+    const auto result_ips = ip_pool{
             {1, 2, 3, 4},
             {1, 2,13,14} };
 
@@ -112,14 +121,14 @@ TEST(FilterTest, TestFilterByTwoFirstSymbols)
 // ------------------------------------------------------------------
 TEST(FilterTest, TestFilterAny)
 {
-    auto filtered_ips = filter_any(ip_pool{
+    const auto filtered_ips = filter_any(ip_pool{
         { 1, 2, 3, 4},
         {21, 2, 1,14},
         {11,22,23, 1},
         { 2, 2,33,34},
         {31, 1,43,44}}, 1);
 
-    auto result_ips = ip_pool{
+    const auto result_ips = ip_pool{
         { 1, 2, 3, 4},
         {21, 2, 1,14},
         {11,22,23, 1},

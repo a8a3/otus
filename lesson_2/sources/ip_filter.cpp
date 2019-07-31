@@ -1,4 +1,3 @@
-#include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -15,10 +14,7 @@ int main(int, char const**)
         {
             const auto ips_as_strings = ip_filter::split_to_strings(line, '\t');
             const auto result = ip_filter::split_to_tokens(ips_as_strings.at(0), '.');
-            
-            if ( ip_filter::bad_ip != result ) {
-                ips.push_back( result );
-            }
+            ips.push_back( result );
         }
         // reverse lexicographically sort
         ip_filter::reverse_lexicographic_sort(ips);

@@ -9,42 +9,63 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace ip_filter 
+namespace ip_filter
 {
 using token   = uint8_t;
 using tokens  = std::array<token, 4>;
 using ip_pool = std::vector<tokens>;
 
-constexpr tokens bad_ip{0, 0, 0, 0};
+// ------------------------------------------------------------------
+static token get_token(const std::string& str) 
+{
+    const int value = std::stoi( str );
+
+    if ( value < 0 || value > 255 )
+    {
+        throw std::runtime_error(std::string("ip token value= ") + std::to_string(value) + std::string(" is out of range 0..255"));
+    }
+    return static_cast<token>(value);
+}
 
 // ------------------------------------------------------------------
 tokens split_to_tokens(const std::string &str, char d)
 {
-    tokens res( bad_ip );
+    tokens res{0, 0, 0, 0};    
 
     std::string::size_type start = 0;
     std::string::size_type stop = str.find_first_of(d);
 
     try 
-    {   size_t i = 0;
+    {
+        size_t i = 0;
         for( ; stop != std::string::npos; ++i ) 
         {
-            res.at(i) = boost::lexical_cast<uint8_t>(str.substr(start, stop - start));
+            res.at(i) = get_token(str.substr(start, stop - start));
             
             start = stop + 1;
             stop = str.find_first_of(d, start);
         }
-        res.at( ++i ) = boost::lexical_cast<uint8_t>(str.substr(start));
+        res.at( i ) = get_token(str.substr(start));
     }
-    catch( const boost::bad_lexical_cast& e ) 
+    catch(const std::invalid_argument& e)
     {
         std::cerr << e.what() << std::endl;
-        return bad_ip;
+        throw;        
     }
     catch(const std::out_of_range& e)
     {
-        std::cout << e.what();
-        return bad_ip;
+        std::cerr << e.what() << std::endl;
+        throw;
+    }
+    catch(const std::runtime_error& e)
+    {
+        std::cerr << e.what() << std::endl;
+        throw;
+    }
+    catch(...)
+    {
+        std::cerr << "unknown exception!\n";
+        throw;
     }
     return res;
 }
