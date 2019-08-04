@@ -23,7 +23,7 @@ target_include_directories(ip_filter_gtests PRIVATE
 
 target_link_libraries(ip_filter_gtests 
     ${GTEST_BOTH_LIBRARIES}
-    pthread
+    ${CMAKE_THREAD_LIBS_INIT}
 )
 
 if (MSVC)

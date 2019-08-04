@@ -1,4 +1,3 @@
-#include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -13,8 +12,9 @@ int main(int, char const**)
         ip_filter::ip_pool ips;      
         for(std::string line; std::getline(std::cin, line);)
         {
-            std::vector<std::string> v = ip_filter::split(line, '\t');
-            ips.push_back(ip_filter::split(v.at(0), '.'));
+            const auto ips_as_strings = ip_filter::split_to_strings(line, '\t');
+            const auto result = ip_filter::split_to_tokens(ips_as_strings.at(0), '.');
+            ips.push_back( result );
         }
         // reverse lexicographically sort
         ip_filter::reverse_lexicographic_sort(ips);
