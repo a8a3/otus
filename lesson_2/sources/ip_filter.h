@@ -89,7 +89,6 @@ std::vector<std::string> split_to_strings(const std::string &str, char d)
     return res;
 }
 
-
 // ------------------------------------------------------------------
 std::string join( const tokens& from, char separator = '.')
 {
@@ -153,6 +152,7 @@ ip_pool filter(const ip_pool& ips, int value1, int value2) {
     return filter(ips, [value1, value2](const auto& tokens) {
         return tokens.size() > 1 && value1 == tokens.at(0)
                                  && value2 == tokens.at(1);
+
     });
 }
 
